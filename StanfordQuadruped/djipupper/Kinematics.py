@@ -3,7 +3,7 @@ from transforms3d.euler import euler2mat
 
 
 def leg_explicit_inverse_kinematics(r_body_foot, leg_index, config):
-    """Find the joint angles corresponding to the given body-relative foot position for a given leg and configuration
+    """Find the joint angles corresponding to the given hip-relative foot position for a given leg and configuration
     
     Parameters
     ----------
@@ -50,20 +50,20 @@ def leg_explicit_inverse_kinematics(r_body_foot, leg_index, config):
         2 * config.LEG_L1 * R_hip_foot
     )
     arccos_argument = np.clip(arccos_argument, -0.99, 0.99)
-    trident = np.arccos(arccos_argument)
+    phi = np.arccos(arccos_argument)
 
     # Angle of the first link relative to the tilted negative z axis
-    hip_angle = theta + trident
+    hip_angle = theta + phi
 
     # Angle between the leg links L1 and L2
     arccos_argument = (config.LEG_L1 ** 2 + config.LEG_L2 ** 2 - R_hip_foot ** 2) / (
         2 * config.LEG_L1 * config.LEG_L2
     )
     arccos_argument = np.clip(arccos_argument, -0.99, 0.99)
-    beta = np.arccos(arccos_argument)
+    trident = np.arccos(arccos_argument)
 
     # Angle of the second link relative to the tilted negative z axis
-    knee_angle = hip_angle - (np.pi - beta)
+    knee_angle = trident - np.pi
 
     return np.array([abduction_angle, hip_angle, knee_angle])
 

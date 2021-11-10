@@ -1,0 +1,13 @@
+[Unit]
+Description=Robot control service
+After=multi-user.target
+
+[Service]
+WorkingDirectory=/home/pi/
+User=pi
+ExecStart=/usr/bin/python3 /home/pi/StanfordQuadruped/run_djipupper.py
+KillSignal=2
+TimeoutStopSec=10
+
+[Install]
+WantedBy=multi-user.target

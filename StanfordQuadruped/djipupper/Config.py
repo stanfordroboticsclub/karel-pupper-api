@@ -1,45 +1,20 @@
 import numpy as np
-from pupper.ServoCalibration import MICROS_PER_RAD, NEUTRAL_ANGLE_DEGREES
-from pupper.HardwareConfig import PS4_COLOR, PS4_DEACTIVATED_COLOR
+from djipupper.IndividualConfig import PS4_COLOR, PS4_DEACTIVATED_COLOR, SERIAL_PORT
 from enum import Enum
-
-# TODO: put these somewhere else
-class PWMParams:
-    def __init__(self):
-        self.pins = np.array([[2, 14, 18, 23], [3, 15, 27, 24], [4, 17, 22, 25]])
-        self.range = 4000
-        self.freq = 250
-
-
-class ServoParams:
-    def __init__(self):
-        self.neutral_position_pwm = 1500  # Middle position
-        self.micros_per_rad = MICROS_PER_RAD  # Must be calibrated
-
-        # The neutral angle of the joint relative to the modeled zero-angle in degrees, for each joint
-        self.neutral_angle_degrees = NEUTRAL_ANGLE_DEGREES
-
-        self.servo_multipliers = np.array(
-            [[1, 1, 1, 1], [-1, 1, -1, 1], [1, -1, 1, -1]]
-        )
-
-    @property
-    def neutral_angles(self):
-        return self.neutral_angle_degrees * np.pi / 180.0  # Convert to radians
 
 
 class Configuration:
     def __init__(self):
         ################# CONTROLLER BASE COLOR ##############
-        self.ps4_color = PS4_COLOR    
-        self.ps4_deactivated_color = PS4_DEACTIVATED_COLOR    
+        self.ps4_color = PS4_COLOR
+        self.ps4_deactivated_color = PS4_DEACTIVATED_COLOR
 
         #################### COMMANDS ####################
-        self.max_x_velocity = 0.4
-        self.max_y_velocity = 0.3
-        self.max_yaw_rate = 2.0
+        self.max_x_velocity = 0.6
+        self.max_y_velocity = 0.6
+        self.max_yaw_rate = 2.5
         self.max_pitch = 30.0 * np.pi / 180.0
-        
+
         #################### MOVEMENT PARAMS ####################
         self.z_time_constant = 0.02
         self.z_speed = 0.03  # maximum speed [m/s]
@@ -53,13 +28,13 @@ class Configuration:
 
         #################### STANCE ####################
         self.delta_x = 0.1
-        self.delta_y = 0.09
-        self.x_shift = 0.0
-        self.default_z_ref = -0.16
+        self.delta_y = 0.1
+        self.x_shift = 0.005
+        self.default_z_ref = -0.14
 
         #################### SWING ######################
         self.z_coeffs = None
-        self.z_clearance = 0.07
+        self.z_clearance = 0.08
         self.alpha = (
             0.5  # Ratio between touchdown distance and total horizontal stance movement
         )
@@ -74,7 +49,7 @@ class Configuration:
             [[1, 1, 1, 0], [1, 0, 1, 1], [1, 0, 1, 1], [1, 1, 1, 0]]
         )
         self.overlap_time = (
-            0.10  # duration of the phase where all four feet are on the ground
+            0.05  # duration of the phase where all four feet are on the ground
         )
         self.swing_time = (
             0.15  # duration of the phase when only two feet are on the ground
@@ -83,9 +58,9 @@ class Configuration:
         ######################## GEOMETRY ######################
         self.LEG_FB = 0.10  # front-back distance from center line to leg axis
         self.LEG_LR = 0.04  # left-right distance from center line to leg plane
-        self.LEG_L2 = 0.115
-        self.LEG_L1 = 0.1235
-        self.ABDUCTION_OFFSET = 0.03  # distance from abduction axis to leg
+        self.LEG_L2 = 0.11
+        self.LEG_L1 = 0.08
+        self.ABDUCTION_OFFSET = 0.02  # distance from abduction axis to leg
         self.FOOT_RADIUS = 0.01
 
         self.HIP_L = 0.0394
@@ -192,7 +167,7 @@ class Configuration:
     def phase_length(self):
         return 2 * self.overlap_ticks + 2 * self.swing_ticks
 
-        
+
 class SimulationConfig:
     def __init__(self):
         self.XML_IN = "pupper.xml"
@@ -205,13 +180,12 @@ class SimulationConfig:
         self.JOINT_SOLIMP = "0.9 0.95 0.001"  # joint constraint parameters
         self.GEOM_SOLREF = "0.01 1"  # time constant and damping ratio for geom contacts
         self.GEOM_SOLIMP = "0.9 0.95 0.001"  # geometry contact parameters
-        
+
         # Joint params
         G = 220  # Servo gear ratio
         m_rotor = 0.016  # Servo rotor mass
         r_rotor = 0.005  # Rotor radius
         self.ARMATURE = G ** 2 * m_rotor * r_rotor ** 2  # Inertia of rotational joints
-        # print("Servo armature", self.ARMATURE)
 
         NATURAL_DAMPING = 1.0  # Damping resulting from friction
         ELECTRICAL_DAMPING = 0.049  # Damping resulting from back-EMF
