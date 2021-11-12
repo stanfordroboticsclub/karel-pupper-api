@@ -1,3 +1,4 @@
+from djipupper import Config
 import numpy as np
 import time
 from src.Controller import Controller
@@ -10,6 +11,7 @@ from djipupper.Config import Configuration
 from djipupper.Kinematics import four_legs_inverse_kinematics
 from src.Utilities import deadband, clipped_first_order_filter
 import argparse
+from enum import Enum
 
 import datetime
 import os
@@ -17,7 +19,11 @@ import msgpack
 
 DIRECTORY = "logs/"
 FILE_DESCRIPTOR = "walking"
-
+class BehaviorState(Enum):
+    DEACTIVATED = -1
+    REST = 0
+    TROT = 1
+    WALK = 2
 class Pupper:      
 
     # if __name__ == "__main__":
@@ -137,30 +143,61 @@ class Pupper:
         self.state.activation = 0
 
     '''
-    The Pupper turns left
+    The Pupper turns left with positive angle. Count deltas until 90
     '''
-    def turnLeft(self):
-        pass
+    def turn(self, angle, speed, behavior=BehaviorState.TROT):
+        speed = np.clip(speed, -self.config.max_yaw_rate, self.config.max_yaw_rate)
+        target_time = abs(angle) / abs(speed) 
+        speed = np.sign(angle) * speed
+        self.turn_for_time(target_time, speed, behavior)
+        
 
     '''
     The Pupper can turn for time in seconds (s)
     '''
-    def turn_for_time(self, duration):
-        pass
+    def turn_for_time(self, duration, speed, behavior=BehaviorState.TROT):
+        command = Command(self.config.default_z_ref)
+        speed = np.clip(speed, -self.config.max_yaw_rate, self.config.max_yaw_rate)
+        x_vel = 0
+        y_vel = 0
+        command.horizontal_velocity = np.array([x_vel, y_vel])
+        command.yaw_rate = speed
+        command.trot_event = True
+        if behavior == BehaviorState.WALK:
+            command.trot_event = False
+            command.walk_event = True
+        elif behavior != BehaviorState.TROT:
+            print("Can't rest while moving forward")
+            return;
+        startTime = time.time()
+        last_loop = startTime
+        while (time.time() - startTime < duration):
+            if time.time() - last_loop >= self.config.dt:
+                self.controller.run(self.state, command)
+                self.hardware_interface.set_cartesian_positions(self.state.final_foot_locations)
+                last_loop = time.time()
+        command = Command(self.config.default_z_ref)
+        command.stand_event = True
+
+        self.controller.run(self.state, command)
+        self.hardware_interface.set_cartesian_positions(self.state.final_foot_locations)
 
     '''
     The Pupper moves forward for time in seconds (s) at a specified speed [0, 1]
     '''
-    def forward_for_time(self, duration, speed):
+    def forward_for_time(self, duration, speed, behavior=BehaviorState.TROT):
         command = Command(self.config.default_z_ref)
         speed = max(min(1, speed), -1)
-        print('Speed:', speed)
         x_vel = self.input_curve(speed) * self.config.max_x_velocity
-        print('x_vel', x_vel)
         y_vel = 0
         command.horizontal_velocity = np.array([x_vel, y_vel])
         command.yaw_rate = 0
         command.trot_event = True
+        if behavior == BehaviorState.WALK:
+            command.walk_event = True
+        elif behavior != BehaviorState.TROT:
+            print("Can't rest while moving forward")
+            return;
         startTime = time.time()
         last_loop = startTime
         while (time.time() - startTime < duration):
