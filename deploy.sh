@@ -1,4 +1,5 @@
 REMOTE=169.254.48.56
+REMOTE=10.34.164.254
 echo PI addrees is "${REMOTE}"
 REMOTE_DIR=/home/pi/karelPupper
 

@@ -168,7 +168,7 @@ class Pupper:
             command.walk_event = True
         elif behavior != BehaviorState.TROT:
             print("Can't rest while moving forward")
-            return;
+            return
         startTime = time.time()
         last_loop = startTime
         while (time.time() - startTime < duration):
@@ -197,7 +197,7 @@ class Pupper:
             command.walk_event = True
         elif behavior != BehaviorState.TROT:
             print("Can't rest while moving forward")
-            return;
+            return
         startTime = time.time()
         last_loop = startTime
         while (time.time() - startTime < duration):
