@@ -23,3 +23,9 @@
   - [ ] Rolling over
   - [ ] Recovery
   - [ ] Dancing
+- [ ] Milestone 4 (Examples and Documentation)
+  - [ ] Square
+  - [ ] 180 degree turns
+  - [ ] Camera Usage
+  - [ ] Camera isBlocked / Color detections
+  - [ ] Maze   
