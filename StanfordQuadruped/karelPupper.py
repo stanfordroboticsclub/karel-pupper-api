@@ -16,6 +16,9 @@ from enum import Enum
 import datetime
 import os
 import msgpack
+import cv2
+from imutils.video import VideoStream
+import imutils
 
 DIRECTORY = "logs/"
 FILE_DESCRIPTOR = "walking"
@@ -42,6 +45,7 @@ class Pupper:
         self.controller = Controller(self.config, four_legs_inverse_kinematics)
         self.state = State(height=self.config.default_z_ref)
         self.input_curve = lambda x: np.sign(x) * min(x ** 2, 1)
+        self.vs = VideoStream(usePiCamera=0).start()
     
     def wakeup(self):
         """Main program"""
@@ -210,7 +214,9 @@ class Pupper:
 
         self.controller.run(self.state, command)
         self.hardware_interface.set_cartesian_positions(self.state.final_foot_locations)
-
+    
+    def getImage(self):
+        return cv2.flip(imutils.rotate(self.vs.read(), 180), 1)
         
     '''
     roll - walking at angle
