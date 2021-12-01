@@ -98,7 +98,20 @@ class HardwareInterface:
                 log_file.write(data_str[:-1] + "\n")
             except ValueError as e:
                 print(e)
-
+    def get_imu(self):
+        decoded_data = None
+        while True:
+            data = self.reader.chew()
+            if not data:
+                return decoded_data
+            try:
+                decoded_data = msgpack.unpackb(data)
+                print(decoded_data)
+                return decoded_data['yaw']
+            except ValueError as e:
+                print(e)
+        return 0
+            
     def write_logfile_header(self, logfile):
         header = "Timestamp,"
         for attribute in [

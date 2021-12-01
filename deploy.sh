@@ -1,7 +1,8 @@
-REMOTE=169.254.48.56
 REMOTE=10.34.168.21
 echo PI addrees is "${REMOTE}"
-REMOTE_DIR=/home/pi/karelPupper
+REMOTE_DIR=/home/pi/karelPupper/karel-pupper-api/StanfordQuadruped
 
-ssh pi@${REMOTE}  mkdir -p ${REMOTE_DIR}
-rsync -avz ${PWD} pi@${REMOTE}:${REMOTE_DIR}
+scp -r $(pwd)/StanfordQuadruped/programs pi@${REMOTE}:${REMOTE_DIR}
+# scp -r $(pwd) pi@${REMOTE}:${REMOTE_DIR}
+
+#rsync -avz ${PWD} pi@${REMOTE}:${REMOTE_DIR}

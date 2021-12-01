@@ -147,7 +147,6 @@ class Pupper:
     only slow stand from bottom position (clarify what the default position is)
     '''
     def slowStand(self):
-        print(self.state.height)
         cur = self.state.height # 0
         target = self.config.default_z_ref
         startTime = time.time()
@@ -160,6 +159,7 @@ class Pupper:
                 self.controller.run(self.state, command)
                 self.hardware_interface.set_cartesian_positions(self.state.final_foot_locations)
                 last_loop = time.time()
+
     def is_blocked(self):
         img = cv2.cvtColor(self.vs.read(), cv2.COLOR_BGR2GRAY)
         lap = cv2.Laplacian(img, cv2.CV_16S)
@@ -168,6 +168,7 @@ class Pupper:
         if stddev[0,0] < BLURRY_THRESHOLD:
             return True
         return False
+    
     '''
     The Pupper rests by returning to its sleeping position. It deactivates at the end.
     '''
@@ -208,7 +209,46 @@ class Pupper:
         target_time = abs(angle) / abs(speed) 
         speed = np.sign(angle) * speed
         self.turn_for_time(target_time, speed, behavior)
+
+    def getImu(self):
+        return self.hardware_interface.get_imu()
+
+    def turnI(self, angle, speed, behavior=BehaviorState.TROT):
+        command = Command(self.config.default_z_ref)
+        speed = np.clip(speed, -self.config.max_yaw_rate, self.config.max_yaw_rate)
+        start = self.hardware_interface.get_imu()
+        target = start + angle
+        x_vel = 0
+        y_vel = 0
+        command.horizontal_velocity = np.array([x_vel, y_vel])
+        command.yaw_rate = speed
+        command.trot_event = True
+        if behavior == BehaviorState.WALK:
+            command.trot_event = False
+            command.walk_event = True
+        elif behavior != BehaviorState.TROT:
+            print("Can't rest while moving forward")
+            return
+        startTime = time.time()
+        last_loop = startTime
+        while start < target:
+            if time.time() - last_loop >= self.config.dt:
+                self.controller.run(self.state, command)
+                self.hardware_interface.set_cartesian_positions(self.state.final_foot_locations)
+                start = self.hardware_interface.get_imu()
+                last_loop = time.time()
+        command = Command(self.config.default_z_ref)
+        command.stand_event = True
+
+        self.controller.run(self.state, command)
+        self.hardware_interface.set_cartesian_positions(self.state.final_foot_locations)
+            
         
+    def forward(self, distance, speed, behavior=BehaviorState.TROT):
+        speed = np.clip(speed, -self.config.max_yaw_rate, self.config.max_yaw_rate)
+        target_time = abs(distance) / abs(speed) 
+        speed = np.sign(distance) * speed
+        self.forward_for_time(target_time, speed, behavior)
 
     '''
     The Pupper can turn for time in seconds (s)
@@ -302,8 +342,6 @@ class Pupper:
     def getImage(self):
         return cv2.flip(imutils.rotate(self.vs.read(), 180), 1)
     
-    
-
     def slowRest(self):
         cur = self.config.default_z_ref
         orig = cur
