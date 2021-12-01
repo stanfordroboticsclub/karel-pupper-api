@@ -106,7 +106,7 @@ class HardwareInterface:
                 return decoded_data
             try:
                 decoded_data = msgpack.unpackb(data)
-                print(decoded_data)
+                # print(decoded_data)
                 return decoded_data['yaw']
             except ValueError as e:
                 print(e)

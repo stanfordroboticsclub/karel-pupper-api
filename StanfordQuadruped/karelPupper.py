@@ -212,12 +212,12 @@ class Pupper:
 
     def getImu(self):
         return self.hardware_interface.get_imu()
-
+    # Left increasing yaw
     def turnI(self, angle, speed, behavior=BehaviorState.TROT):
         command = Command(self.config.default_z_ref)
         speed = np.clip(speed, -self.config.max_yaw_rate, self.config.max_yaw_rate)
         start = self.hardware_interface.get_imu()
-        target = start + angle
+        
         x_vel = 0
         y_vel = 0
         command.horizontal_velocity = np.array([x_vel, y_vel])
@@ -231,8 +231,17 @@ class Pupper:
             return
         startTime = time.time()
         last_loop = startTime
-        while start < target:
-            if time.time() - last_loop >= self.config.dt:
+        if (angle > 0):
+            target = start + angle
+            while start < target:
+                self.controller.run(self.state, command)
+                self.hardware_interface.set_cartesian_positions(self.state.final_foot_locations)
+                start = self.hardware_interface.get_imu()
+                last_loop = time.time()
+        else:
+            target = start - abs(angle)
+            command.yaw_rate = -speed
+            while start > target:
                 self.controller.run(self.state, command)
                 self.hardware_interface.set_cartesian_positions(self.state.final_foot_locations)
                 start = self.hardware_interface.get_imu()
