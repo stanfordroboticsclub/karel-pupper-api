@@ -23,7 +23,7 @@ import imutils
 DIRECTORY = "logs/"
 FILE_DESCRIPTOR = "walking"
 BLURRY_THRESHOLD = 3
-
+EPISLON = 0.1
 class BehaviorState(Enum):
     DEACTIVATED = -1
     REST = 0
@@ -212,12 +212,13 @@ class Pupper:
 
     def getImu(self):
         return self.hardware_interface.get_imu()
+    
     # Left increasing yaw
     def turnI(self, angle, speed, behavior=BehaviorState.TROT):
         command = Command(self.config.default_z_ref)
         speed = np.clip(speed, -self.config.max_yaw_rate, self.config.max_yaw_rate)
         start = self.hardware_interface.get_imu()
-        
+        speed = np.sign(angle) * speed
         x_vel = 0
         y_vel = 0
         command.horizontal_velocity = np.array([x_vel, y_vel])
@@ -231,21 +232,28 @@ class Pupper:
             return
         startTime = time.time()
         last_loop = startTime
-        if (angle > 0):
-            target = start + angle
-            while start < target:
+        
+        target = start + angle
+        sine_dif = abs(np.sin(start) - np.sin(target))
+        cos_dif = abs(np.cos(start) - np.cos(target))
+        while sine_dif > EPISLON or cos_dif > EPISLON:
+            if time.time() - last_loop >= self.config.dt:
+                # print(start)
                 self.controller.run(self.state, command)
                 self.hardware_interface.set_cartesian_positions(self.state.final_foot_locations)
                 start = self.hardware_interface.get_imu()
+                sine_dif = abs(np.sin(start) - np.sin(target))
+                cos_dif = abs(np.cos(start) - np.cos(target))
+                # print(start, target, sine_dif, cos_dif)
                 last_loop = time.time()
-        else:
-            target = start - abs(angle)
-            command.yaw_rate = -speed
-            while start > target:
-                self.controller.run(self.state, command)
-                self.hardware_interface.set_cartesian_positions(self.state.final_foot_locations)
-                start = self.hardware_interface.get_imu()
-                last_loop = time.time()
+        # else:
+        #     target = start - abs(angle)
+        #     command.yaw_rate = -speed
+        #     while sine_dif > EPISLON or cos_dif > EPSILON:
+        #         self.controller.run(self.state, command)
+        #         self.hardware_interface.set_cartesian_positions(self.state.final_foot_locations)
+        #         start = self.hardware_interface.get_imu()
+        #         last_loop = time.time()
         command = Command(self.config.default_z_ref)
         command.stand_event = True
 
@@ -280,6 +288,7 @@ class Pupper:
         last_loop = startTime
         while (time.time() - startTime < duration):
             if time.time() - last_loop >= self.config.dt:
+                # print(time.time() - last_loop)
                 self.controller.run(self.state, command)
                 self.hardware_interface.set_cartesian_positions(self.state.final_foot_locations)
                 last_loop = time.time()

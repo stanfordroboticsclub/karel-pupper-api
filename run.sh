@@ -7,7 +7,6 @@ if [ "$#" -ne 1 ]; then
     echo "Running default file"
     ssh -t pi@${REMOTE} 'cd karelPupper/karel-pupper-api/StanfordQuadruped/programs && python3 '${DEFAULT_PROGRAM}''
 else
-  ssh -t pi@${REMOTE} 'cd
-  karelPupper/karel-pupper-api/StanfordQuadruped/programs && python3 '$1''
+  ssh -t pi@${REMOTE} 'cd karelPupper/karel-pupper-api/StanfordQuadruped/programs && python3 '$1''
 
 fi

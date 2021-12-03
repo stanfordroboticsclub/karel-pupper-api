@@ -33,6 +33,7 @@ class NonBlockingSerialReader:
     def chew(self):
         while True:
             raw_data = self.serial_handle.read(1024)
+            
             if not raw_data:
                 break
             for in_byte in raw_data:
@@ -95,7 +96,7 @@ class HardwareInterface:
                             data_str += "%0.3f" % v + ","
                     else:
                       data_str += str(value) + ","
-                log_file.write(data_str[:-1] + "\n")
+                # log_file.write(data_str[:-1] + "\n")
             except ValueError as e:
                 print(e)
     def get_imu(self):
