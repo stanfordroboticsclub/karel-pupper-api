@@ -1,9 +1,17 @@
 # karel-pupper-api
-
-![Pupper](https://user-images.githubusercontent.com/21105308/144390767-f9bf2737-a8c6-4a9e-b2e7-a1c12ed70820.jpg)
+<p align="center">
+  <img src="https://user-images.githubusercontent.com/21105308/144390767-f9bf2737-a8c6-4a9e-b2e7-a1c12ed70820.jpg" alt="Pupper" width="800"/>
+</p>
 
 # Description
 This repo was developed to make pupper simpler to program. The main features of implemented in this repo are basic movement (moving forward, turning) and access to image frames to do computer vision. The naming conventions and features are modeled after the great CS106A classic, Karel.
+
+# Approach
+- Focusing on user ease-of-use and scalability
+- Providing predictable and understandable commands and controls
+- Allowing easy deployment and development workflow
+- Building off of existing StanfordQuadruped repo, replacing JoyStick interface with karel-pupper commands
+
 
 # Environment Setup
 First, make sure that you have completed the instructions for ssh and internet (https://pupper.readthedocs.io/en/latest/guide/software_installation.html#) and
@@ -89,18 +97,20 @@ Getting image
 myPup.getImage()
 ```
 
+Getting IMU yaw angle (turning angle)
+```python
+myPup.getImu()
+```
 
+Forward
+```python
+myPup.forward(distance, speed, behavior=BehaviorState.TROT)
+```
 
-
-
-
-
-
-
-
-
-
-
+nap (rests without deactivating)
+```python
+myPup.nap()
+```
 
 <!-- ROADMAP -->
 ## Roadmap
@@ -116,8 +126,8 @@ myPup.getImage()
   - [x] Stopping routine
 - [x] Milestone 3 (Advanced Control and Design)
   - [x] Stream Camera feed
-  - [ ] Lidar USB sensor  
-  ~~- [ ] Camera getting images~~
+  ~~- [ ] Lidar USB sensor 
+  - [x] Camera getting images
   - [x] Is blocked routine
   - [ ] Turn on radius
   - [x] Move for distance
@@ -132,5 +142,8 @@ myPup.getImage()
   - [x] Camera isBlocked / Color detections
   - [ ] Maze   
 
+# Reflections
+Working and debugging on physical system was hard! Often, simple features to implement were not that simple, and we spent a lot of time on setting up our environment. Getting ssh, wifi, and deployment to work were hurdles that we had to overcome to do testing. This, among other issues like Pupper breaking itself, clicking its own configuration buttons, wires getting caught, power plug slightly being unplugged, motors spazzing out due to loop rate issues, and more. Our approach was to use Karel commands as inspiration, but an alternative would be to build one general movement command with a lot of parameters and provide getters to images and sensors for the user to use. This would be more for advanced users, and the usability of our code might be less accessible. Future directions include adding more functionality for moving, adding capability to control multiple puppers from one program, and interfacing with simulation. We've learned so many things from how the low-level control of Pupper works as well as how to implement scalable commands for all types of experienced programmers. Pupper was so much fun to work with and we look forward to what comes next!
 
+TODO: Put programs folder inside of the main karel-pupper-api folder and create setup script to allow importing of parent directories
 
