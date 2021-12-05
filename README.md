@@ -1,4 +1,5 @@
 # karel-pupper-api
+
 ![Pupper](https://user-images.githubusercontent.com/21105308/144390767-f9bf2737-a8c6-4a9e-b2e7-a1c12ed70820.jpg)
 
 # Description
@@ -42,12 +43,70 @@ git clone https://github.com/stanfordroboticsclub/karel-pupper-api.git
 # You can specify what specific program you want to run as an argument
 ./run.sh my_program.py
 ```
+## reset.sh
+```bash
+# Run ./reset.sh within the root repo directory (karel-pupper-api) to deactivate the pupper from any position
+./reset.sh 
+```
+## Usage
+Importing karelPupper class
+```python
+import sys, os
+sys.path.append(os.path.abspath(os.path.join('..')))
+import karelPupper
+```
+Initialize Pupper object and configuration
+```python
+myPup = karelPupper.Pupper()
+```
+Waking up pupper (activate)
+```python
+myPup.wakeup()
+```
+https://user-images.githubusercontent.com/21105308/144733202-af8c7995-d686-4817-b3bf-b51f17d40a59.mov
+
+
+Resting up pupper (deactivate)
+```python
+myPup.rest()
+```
+https://user-images.githubusercontent.com/21105308/144733176-4d11b253-b27f-4fe0-9c9b-71878fb0d2b7.mov
+
+Turning pupper with IMU
+```python
+myPup.turnI(-np.pi / 2, 1.2)
+```
+https://user-images.githubusercontent.com/21105308/144733345-50a5e163-2a14-4f63-91c3-5e9b99b90c20.mov
+
+Move until blocked
+```python
+myPup.move_until_blocked(0.4)
+```
+https://user-images.githubusercontent.com/21105308/144733439-99dc2021-1cb7-4842-9a65-d3af0fd861a8.mov
+
+Getting image
+```python
+myPup.getImage()
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 <!-- ROADMAP -->
 ## Roadmap
 
 - [x] Milestone 1 (Setup)
   - [x] API Structure and Design!
-
   - [x] Plan for High-level -> Low-level design
 - [x] Milestone 2 (Basic Control)
   - [x] Turning for specified angle
@@ -55,20 +114,23 @@ git clone https://github.com/stanfordroboticsclub/karel-pupper-api.git
   - [x] Moving Different Gaits
   - [x] Standing up routine
   - [x] Stopping routine
-- [ ] Milestone 3 (Advanced Control and Design)
-  - [ ] Stream Camera feed
+- [x] Milestone 3 (Advanced Control and Design)
+  - [x] Stream Camera feed
   - [ ] Lidar USB sensor  
-  - [ ] Camera getting images
-  - [ ] Is blocked routine
+  ~~- [ ] Camera getting images~~
+  - [x] Is blocked routine
   - [ ] Turn on radius
-  - [ ] Move for distance
+  - [x] Move for distance
   - [ ] Advanced Maneuvers
   - [ ] Rolling over
-  - [ ] Recovery
+  - [x] Recovery
   - [ ] Dancing
-- [ ] Milestone 4 (Examples and Documentation)
-  - [ ] Square
+- [x] Milestone 4 (Examples and Documentation)
+  - [x] Square
   - [ ] 180 degree turns
-  - [ ] Camera Usage
-  - [ ] Camera isBlocked / Color detections
+  - [x] Camera Usage
+  - [x] Camera isBlocked / Color detections
   - [ ] Maze   
+
+
+
