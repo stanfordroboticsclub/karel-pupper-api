@@ -47,6 +47,7 @@ Then, run this command to push the repository to the pi through ssh.
 ./deploy-first-time.sh
 ```
 ## run.sh
+This is the script you will run the most since it will reset, deploy, and run your code from your computer.
 ```bash
 # Run ./run.sh within the root repo directory (karel-pupper-api) to push only the programs folder to the pi and run the program on pupper
 ./run.sh 
