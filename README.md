@@ -16,6 +16,15 @@ This repo was developed to make pupper simpler to program. The main features of 
 # Environment Setup
 First, make sure that you have completed the instructions for ssh and internet (https://pupper.readthedocs.io/en/latest/guide/software_installation.html#) and
 note what the IP address of the pi is. You will need it to ssh in the future wirelessly.
+
+## Saving the PI address to your computer
+Type these commands and replace it with the IP address of your pi in the terminal you are using. This will
+save your ip address and update the terminal to save your variable for future
+runs.
+```bash
+export pi=put.address.here
+source ~/.bashrc
+```
 # Installation
 ## Alternative way to add SSH key to pi
 ```bash
