@@ -37,11 +37,16 @@ ssh-copy-id -i (filepath) pi@IP.ADDRESS
 *Note: Also make sure SSH and the webcam are enabled on the pi (https://phoenixnap.com/kb/enable-ssh-raspberry-pi)*
 
 # Installing the repo
-Your karel-pupper code should be contained within the `programs` folder.
+Write all of your karel-pupper code within the `programs` folder.
 On your computer, clone the repo.
 ```bash
 git clone https://github.com/stanfordroboticsclub/karel-pupper-api.git
 ```
+Then, run this command to push the repository to the pi through ssh.
+```bash
+./deploy-first-time.sh
+```
+
 ## deploy-folder.sh
 ```bash
 # Run ./deploy-folder.sh within the root repo directory (karel-pupper-api) to push the folder to the pi
