@@ -46,18 +46,6 @@ Then, run this command to push the repository to the pi through ssh.
 ```bash
 ./deploy-first-time.sh
 ```
-
-## deploy-folder.sh
-```bash
-# Run ./deploy-folder.sh within the root repo directory (karel-pupper-api) to push the folder to the pi
-./deploy-folder.sh
-```
-## deploy.sh
-```bash
-# Run ./deploy.sh within the root repo directory (karel-pupper-api) to push only the programs folder to the pi
-./deploy.sh
-```
-
 ## run.sh
 ```bash
 # Run ./run.sh within the root repo directory (karel-pupper-api) to push only the programs folder to the pi and run the program on pupper
@@ -69,6 +57,11 @@ Then, run this command to push the repository to the pi through ssh.
 ```bash
 # Run ./reset.sh within the root repo directory (karel-pupper-api) to deactivate the pupper from any position
 ./reset.sh 
+```
+## deploy.sh
+```bash
+# Run ./deploy.sh within the root repo directory (karel-pupper-api) to push only the programs folder to the pi
+./deploy.sh
 ```
 ## Usage
 Importing karelPupper class
