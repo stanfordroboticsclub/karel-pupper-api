@@ -3,7 +3,7 @@ import msgpack
 import numpy as np
 from enum import Enum
 
-from djipupper.HardwareConfig import (
+from StanfordQuadruped.djipupper.HardwareConfig import (
     MAX_CURRENT,
     POSITION_KP,
     POSITION_KD,
@@ -81,7 +81,7 @@ class HardwareInterface:
     def set_max_current_from_file(self):
         self.send_dict({"max_current": MAX_CURRENT})
 
-    def log_incoming_data(self, log_file):
+    def log_incoming_data(self, log_file=None):
         decoded_data = None
         while True:
             data = self.reader.chew()
@@ -96,6 +96,7 @@ class HardwareInterface:
                             data_str += "%0.3f" % v + ","
                     else:
                       data_str += str(value) + ","
+                print(decoded_data)
                 # log_file.write(data_str[:-1] + "\n")
             except ValueError as e:
                 print(e)
@@ -107,12 +108,23 @@ class HardwareInterface:
                 return decoded_data
             try:
                 decoded_data = msgpack.unpackb(data)
-                # print(decoded_data)
+                
                 return decoded_data['yaw']
             except ValueError as e:
                 print(e)
         return 0
-            
+    def get_pos(self):
+        decoded_data = None
+        while True:
+            data = self.reader.chew()
+            if not data:
+                continue
+            try:
+                decoded_data = msgpack.unpackb(data)
+                return decoded_data['cur']
+            except ValueError as e:
+                print(e)
+        return 0
     def write_logfile_header(self, logfile):
         header = "Timestamp,"
         for attribute in [

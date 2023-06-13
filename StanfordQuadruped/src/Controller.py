@@ -1,15 +1,15 @@
-from src.Gaits import GaitController
-from src.StanceController import StanceController
-from src.SwingLegController import SwingController
-from src.Utilities import clipped_first_order_filter
-from src.State import BehaviorState, State
+from StanfordQuadruped.src.Gaits import GaitController
+from StanfordQuadruped.src.StanceController import StanceController
+from StanfordQuadruped.src.SwingLegController import SwingController
+from StanfordQuadruped.src.Utilities import clipped_first_order_filter
+from StanfordQuadruped.src.State import BehaviorState, State
 
 import numpy as np
 from transforms3d.euler import euler2mat, quat2euler
 from transforms3d.quaternions import qconjugate, quat2axangle
 from transforms3d.axangles import axangle2mat
 
-from src.StaticGait import VirtualVehicle
+from StanfordQuadruped.src.StaticGait import VirtualVehicle
 
 
 class Controller:

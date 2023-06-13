@@ -4,7 +4,7 @@ from numpy.core.numeric import indices
 from scipy import interpolate
 
 # from Polytope import Polytope
-from src.Polytope import Polytope
+from StanfordQuadruped.src.Polytope import Polytope
 
 default_contact_positions = [np.array([0.1, -0.1]), 
     np.array([0.1, 0.1]), 

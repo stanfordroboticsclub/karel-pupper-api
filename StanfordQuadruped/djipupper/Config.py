@@ -1,5 +1,5 @@
 import numpy as np
-from djipupper.IndividualConfig import PS4_COLOR, PS4_DEACTIVATED_COLOR, SERIAL_PORT
+from StanfordQuadruped.djipupper.IndividualConfig import PS4_COLOR, PS4_DEACTIVATED_COLOR, SERIAL_PORT
 from enum import Enum
 
 
@@ -20,7 +20,7 @@ class Configuration:
         self.z_speed = 0.03  # maximum speed [m/s]
         self.pitch_deadband = 0.02
         self.pitch_time_constant = 0.25
-        self.max_pitch_rate = 0.15
+        self.max_pitch_rate = 0.25 # 0.15
         self.roll_speed = 0.16  # maximum roll rate [rad/s]
         self.yaw_time_constant = 0.3
         self.max_stance_yaw = 1.2
