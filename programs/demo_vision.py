@@ -7,7 +7,7 @@ def main():
     ############################
     # Pupper Captures the Moment
     ############################
-    myPup = karelPupper.Pupper()
+    myPup = karelPupper.Pupper("Coco")
     myPup.wakeup()
 
     myPup.turn(pi/4, 1, "trot")
